@@ -8,6 +8,7 @@
 const express = require("express")           // Express framework for building APIs
 const multer = require("multer")
 const app = express()     
+const postModel = require("./models/post.model")
 
 // Multer setup:
 // - memoryStorage keeps the uploaded file in RAM as a Buffer (no file written to disk)
@@ -38,6 +39,14 @@ app.post("/create-post", upload.single("image"), async (req, res) => {
         const result = await uploadFile(req.file.buffer)
         console.log(result)
 
+          // Save to MongoDB
+        const newPost = await postModel.create({
+            image: result.url,
+            caption: req.body.caption
+        })
+
+        // console.log(newPost)
+
         // For now we only send back a simple success message and original file name.
         // You could also save result.url + caption to MongoDB using the Post model.
         res.status(200).json({
@@ -47,6 +56,23 @@ app.post("/create-post", upload.single("image"), async (req, res) => {
 
     } catch (error) {
         // Catch any unexpected error (ImageKit, validation, etc.) and send 500
+        res.status(500).json({ message: "Something went wrong" })
+    }
+})
+
+app.get("/feed", async (req, res) => {
+    try {
+        const posts = await postModel.find()
+
+        console.log(posts)
+
+        return res.status(200).json({
+            message: "posts fetched successfully",
+            posts
+        })
+
+    } catch (error) {
+        console.log(error)
         res.status(500).json({ message: "Something went wrong" })
     }
 })
