@@ -5,8 +5,8 @@
 // 3) Start the Express app on a given port
 require("dotenv").config();
 const app = require("./src/app")
-const port = 6001 // HTTP port where the server listens
 const ConnectToDB = require("./src/DB/db")
+const port = process.env.port // HTTP port where the server listens
 
 // Connect to MongoDB first, then start server
 ConnectToDB()
