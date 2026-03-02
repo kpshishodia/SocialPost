@@ -9,12 +9,16 @@ const express = require("express")           // Express framework for building A
 const multer = require("multer")
 const app = express()     
 const postModel = require("./models/post.model")
+const cors = require("cors")
+
 
 // Multer setup:
 // - memoryStorage keeps the uploaded file in RAM as a Buffer (no file written to disk)
 // - upload.single("image") will put the uploaded file on req.file
 const upload = multer({storage: multer.memoryStorage()})
 const uploadFile = require("./services/storage.service")
+
+app.use(cors())
 
 // Middleware to parse JSON body from client requests
 app.use(express.json()); 
